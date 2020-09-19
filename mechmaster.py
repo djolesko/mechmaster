@@ -3,12 +3,27 @@ from tkinter import *
 from tkinter import ttk
 import pandas as pd
 import sqlite3
+from tkcalendar import DateEntry
 
 
 #https://www.youtube.com/watch?v=YXPyB4XeYLA
 LARGE_FONT = ("OpenSans", 16)
 NORMAL_FONT = ("OpenSans", 12)
 SMALL_FONT = ("OpenSans", 10)
+
+def popupmsg(msg):
+    popup = tk.Tk()
+    #popup.iconbitmap("content_portal_Hm6_icon.ico")
+    popup.wm_title("BIRequestApplication")
+    label = ttk.Label(popup, text=msg, font=NORMAL_FONT)
+    label.pack(side="top", fill="x", pady=10)
+    B1 = ttk.Button(popup, text="Okay", command=popup.destroy)
+    B1.pack()
+    popup.geometry('300x150')
+    popup.mainloop()
+
+
+
 
 class Mechmaster(tk.Tk):
 
@@ -100,10 +115,58 @@ class PageOne(tk.Frame):
 class PageTwo(tk.Frame):
 
 	def __init__(self, parent, controller):
-		tk.Frame.__init__(self, parent)
+		tk.Frame.__init__(self, parent,bg='gray31')
 		#self.grid_rowconfigure(5, minsize=2000, weight=1)
 		header_label2=tk.Label(self,text='Dobrodosli u Mechmaster page two',font=LARGE_FONT,bg='gray31', fg='white').pack()
 		#e0 = Text(self, height=3, width=30, wrap="none").grid()
+		tk.Label(self,text="Unesite Ime",font=NORMAL_FONT,bg='gray31', fg='white').pack()
+		e0=tk.Entry(self)
+		e0.pack()
+		tk.Label(self,text="Prezime",font=NORMAL_FONT,bg='gray31', fg='white').pack()
+		e1=tk.Entry(self)
+		e1.pack()
+		tk.Label(self,text="Datum",font=NORMAL_FONT,bg='gray31', fg='white').pack()
+		e2=DateEntry(self,locale='en_US',date_pattern='dd-mm-y')
+		e2.pack()
+		tk.Label(self,text="Opis",font=NORMAL_FONT,bg='gray31', fg='white').pack()
+		e3=Text(self, height=5, width=30, wrap="none")
+		e3.pack()
+		tk.Label(self,text="Iznos RSD",font=NORMAL_FONT,bg='gray31', fg='white').pack()
+		e4=tk.Entry(self)
+		e4.pack()
+		tk.Label(self,text="Faktura",font=NORMAL_FONT,bg='gray31', fg='white').pack()
+		e5=tk.Entry(self)
+		e5.pack()
+		tk.Label(self,text="Kilometraza",font=NORMAL_FONT,bg='gray31', fg='white').pack()
+		e6=tk.Entry(self)
+		e6.pack()
+		tk.Label(self,text="Napomene",font=NORMAL_FONT,bg='gray31', fg='white').pack()
+		e7=Text(self, height=3, width=30, wrap="none")
+		e7.pack()
+		tk.Label(self,text="Model",font=NORMAL_FONT,bg='gray31', fg='white').pack()
+		e8=tk.Entry(self)
+		e8.pack()
+
+		button5 = tk.Button(self, text="Unesi podatke u bazu", bg='snow4', fg='white', command=lambda: import_data2())
+		button5.pack()
+
+		def import_data2():
+			global data
+			data= {'ime':[e0.get()],
+			'prezime':[e1.get()],
+			'datum':[e2.get_date()],
+			'opis':[e3.get("1.0",END)],
+			'iznos':[e4.get()],
+			'faktura':[e5.get()],
+			'kilometraza':[e6.get()],
+			'napomene':[e7.get("1.0",END)],
+			'model':[e8.get()]
+			}
+			df = pd.DataFrame(data)	
+			print(df)
+			conn=sqlite3.connect('mechmaster.db')
+			df.to_sql('mechmaster_test',con=conn, index=False, schema = 'mechmaster.db',if_exists='append')
+			popupmsg('New project added to the database!')
 
 
 
