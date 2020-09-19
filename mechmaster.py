@@ -77,9 +77,9 @@ class PageOne(tk.Frame):
 		button1  = tk.Button(self,text="Nazad", font = NORMAL_FONT, command=lambda : [refresh(),controller.show_frame(StartPage)]).pack()
 		def import_data():
 			conn=sqlite3.connect('mechmaster.db')
-			df = pd.read_sql("select * from mechmaster_test",con=conn)
+			df = pd.read_sql("select *,rowid from mechmaster_test",con=conn)
 			global tree
-			tree = ttk.Treeview(columns=("ime", "prezime", "datum", "opis","iznos","faktura","kilometraza","napmomene","model"),show='headings')
+			tree = ttk.Treeview(columns=("ime", "prezime", "datum", "opis","iznos","faktura","kilometraza","napmomene","model","rowid"),show='headings')
 			for i in tree.get_children():
 					tree.delete(i)
 			tree.heading('#1', text='ime')
@@ -91,6 +91,7 @@ class PageOne(tk.Frame):
 			tree.heading('#7', text='kilometraza')
 			tree.heading('#8', text='napomene')
 			tree.heading('#9', text='model')
+			tree.heading('#10', text='rowid')
 			tree.column('#1',width = 80,stretch=NO)
 			tree.column('#2',width = 80,stretch=NO)
 			tree.column('#3',width = 80,stretch=NO)
@@ -100,6 +101,7 @@ class PageOne(tk.Frame):
 			tree.column('#7',width = 80,stretch=NO)
 			tree.column('#8',width = 340,stretch=NO)
 			tree.column('#9',stretch=NO)
+			tree.column('#10',width = 60,stretch=NO)
 			for column, row in df.iterrows():		
 					tree.insert('', END, values=list(row))
 					tree.columnconfigure(0,weight=1)
@@ -109,9 +111,7 @@ class PageOne(tk.Frame):
 		def refresh():
 			tree.destroy()
 			
-			
-
-		
+					
 class PageTwo(tk.Frame):
 
 	def __init__(self, parent, controller):
@@ -147,8 +147,6 @@ class PageTwo(tk.Frame):
 		e8=tk.Entry(self)
 		e8.pack()
 
-		button5 = tk.Button(self, text="Unesi podatke u bazu", bg='snow4', fg='white', command=lambda: import_data2())
-		button5.pack()
 
 		def import_data2():
 			global data
@@ -167,6 +165,21 @@ class PageTwo(tk.Frame):
 			conn=sqlite3.connect('mechmaster.db')
 			df.to_sql('mechmaster_test',con=conn, index=False, schema = 'mechmaster.db',if_exists='append')
 			popupmsg('New project added to the database!')
+		def clear_entries():
+			global clear_entries
+			e0.delete(0,tk.END)
+			e1.delete(0,tk.END)
+			e3.delete("1.0",END)
+			e4.delete(0,tk.END)
+			e5.delete(0,tk.END)
+			e6.delete(0,tk.END)
+			e7.delete("1.0",END)
+			e8.delete(0,tk.END)
+
+		button5 = tk.Button(self, text="Unesi podatke u bazu", bg='snow4', fg='white', command=lambda: import_data2())
+		button5.pack()
+		button6 = tk.Button(self, text="Nazad", bg='snow4', fg='white', command=lambda: [clear_entries(),controller.show_frame(StartPage)])
+		button6.pack()
 
 
 

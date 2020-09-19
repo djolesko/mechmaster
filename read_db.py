@@ -1,7 +1,7 @@
 import sqlite3
 import pandas as pd
 conn=sqlite3.connect('mechmaster.db')
-df = pd.read_sql("select * from mechmaster_test",con=conn)
+df = pd.read_sql("select rowid, * from mechmaster_test",con=conn)
 print(df.head())
 
 
