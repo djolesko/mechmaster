@@ -105,9 +105,18 @@ class PageOne(tk.Frame):
 			for column, row in df.iterrows():		
 					tree.insert('', END, values=list(row))
 					tree.columnconfigure(0,weight=1)
-					tree.place(anchor='nw', relheight=0.4, relwidth=1.0, rely=0.6)
-			#tree.bind('<ButtonRelease-1>', on_double_click)
+					tree.place(anchor='nw', relheight=1.0, relwidth=1.0, rely=0.6)
+			tree.bind('<ButtonRelease-1>', on_double_click)
 		
+
+		def on_double_click(event):
+			global get_stuff
+			get_stuff=tree.focus()
+			# global get_row_id
+			get_row_id = str(tree.item(get_stuff)['values'][3])
+			print(get_stuff)
+			print(get_row_id)
+
 		def refresh():
 			tree.destroy()
 			
